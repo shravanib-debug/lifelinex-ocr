@@ -42,10 +42,10 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS configuration - allow requests from HIS frontend
+# CORS configuration - allow requests from all origins for HF Spaces
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000", "http://localhost:5001"],
+    allow_origins=["*"],  # Allow all origins for Hugging Face Spaces
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -223,4 +223,4 @@ async def cleanup_uploads():
 # Entry point for running with uvicorn
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=7860)
