@@ -96,10 +96,15 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    """Detailed health check"""
+    """Detailed health check - returns healthy even if model not yet loaded"""
+    try:
+        model_status = get_donut_loader()._initialized
+    except Exception:
+        model_status = False
+    
     return {
         "status": "healthy",
-        "model_loaded": get_donut_loader()._initialized,
+        "model_loaded": model_status,
         "raw_upload_dir": str(UPLOAD_DIR_RAW),
         "masked_upload_dir": str(UPLOAD_DIR_MASKED)
     }
