@@ -1,12 +1,11 @@
 """
 Text Extractor Module
 =====================
-Extracts patient information from ID card images using Donut model.
+Extracts patient information from ID card images using Tesseract OCR.
 Parses name, DOB, gender, and Aadhaar number from extracted text.
 """
 
 import re
-import torch
 from PIL import Image
 from typing import Dict, Optional, Any
 import logging
