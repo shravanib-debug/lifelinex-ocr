@@ -147,18 +147,27 @@ async def extract_id(file: UploadFile = File(...)):
         # Open image with PIL
         pil_image = Image.open(raw_path)
         
-        # Convert to RGB if necessary (for models expecting RGB)
+        # Convert to RGB if necessary
         if pil_image.mode != 'RGB':
             pil_image = pil_image.convert('RGB')
+            
+        # Optimization: Resize if image is too large (prevent memory crash on free tier)
+        # Max dimension 1800px is usually sufficient for ID cards
+        max_dimension = 1800
+        if max(pil_image.size) > max_dimension:
+            ratio = max_dimension / max(pil_image.size)
+            new_size = (int(pil_image.size[0] * ratio), int(pil_image.size[1] * ratio))
+            logger.info(f"Resizing image from {pil_image.size} to {new_size} for memory optimization")
+            pil_image = pil_image.resize(new_size, Image.Resampling.LANCZOS)
         
-        # Extract patient details using Donut model
+        # Extract patient details using Tesseract OCR
         logger.info("Extracting patient details with AI...")
         extraction_result = extract_patient_details(pil_image)
         
-        # Mask Aadhaar in the image
+        # Mask Aadhaar in image
         logger.info("Masking Aadhaar in image...")
         masked_path = process_pil_image(
-            pil_image,
+            pil_image,  # Pass the resized image
             str(UPLOAD_DIR_MASKED),
             safe_filename,
             method='blur'
