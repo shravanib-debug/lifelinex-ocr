@@ -1,0 +1,12 @@
+# Render Blueprint for OCR Service
+# Deploy via: https://dashboard.render.com/new?repo=your-repo-url
+
+services:
+  - type: web
+    name: lifelinex-ocr
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10
